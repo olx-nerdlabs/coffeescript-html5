@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Canvas-04</title>
+    <script src="coffee-script.js"></script>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script type="text/coffeescript">
+gfx =
+    init: ->
+        canvas = document.querySelector "#game"
+        @ctx = canvas?.getContext? "2d"
+        @ctx?
+
+game =
+    init: ->
+        if not gfx.init()
+            alert "No pude"
+        else
+            alert "Ok"
+
+game.init()
+</script>
+</body>
+</html>

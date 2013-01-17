@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Canvas-03</title>
+    <script src="coffee-script.js"></script>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script type="text/coffeescript">
+ctx = document
+    .getElementById("game")
+    .getContext("2d")
+
+noise = ->
+    for x in [0..20]
+        for y in [0..10]
+            color = Math.floor(Math.random() * 360)
+            ctx.fillStyle = "hsl(#{color}, 60%, 50%)"
+            ctx.fillRect x * 15, y * 15, 14, 14
+
+setInterval noise, 100
+</script>
+</body>
+</html>
