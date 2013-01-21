@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Canvas grid size</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="coffee-script.js"></script>
+    <script type="text/coffeescript">
+    gfx =
+        init: ->
+            canvas = $ "#game"
+            @ctx = canvas?[0].getContext? "2d"
+            @ctx?
+
+        drawGrid: (n) ->
+            console.log n
+            width = @ctx.canvas.width
+            height = @ctx.canvas.height
+
+            @ctx.canvas.width = width # clear canvas
+            @ctx.strokeStyle = '#aaa'
+            @ctx.strokeWidth = 1
+
+            # Why did you start x and y at 0.5? Why not 0?
+            # http://diveintohtml5.info/canvas.html
+            for x in [0.5..width] by n
+                @ctx.moveTo(x, 0)
+                @ctx.lineTo(x, height)
+            for y in [0.5..height] by n
+                @ctx.moveTo(0, y)
+                @ctx.lineTo(width, y)
+            @ctx.stroke()
+
+    $ ->
+        if not gfx.init()
+            alert "Error"
+            return
+        gfx.drawGrid 20
+        $('#grid').change () ->
+            n = $(@).val()
+            gfx.drawGrid parseInt(n)
+            $('#size').html(n)
+    </script>
+</head>
+<body>
+    <canvas id="game" width="501" height="301"></canvas>
+    <br>
+    <input type="range" min="5" max="50" value="20" step="5" id="grid">
+    Grid size: <span id="size">20</span>
+</body>
+</html>

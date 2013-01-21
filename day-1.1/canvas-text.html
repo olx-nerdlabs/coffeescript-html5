@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Canvas text size</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="coffee-script.js"></script>
+    <script type="text/coffeescript">
+    gfx =
+        init: ->
+            canvas = $ "#game"
+            @ctx = canvas?[0].getContext? "2d"
+            @ctx?
+
+        drawText: (n) ->
+            console.log n
+            width = @ctx.canvas.width
+            height = @ctx.canvas.height
+
+            @ctx.canvas.width = width # clear canvas
+            @ctx.font = "bold #{n}px sans-serif"
+            @ctx.fillText("(#{width}, #{height})", 10, 150)
+
+    $ ->
+        if not gfx.init()
+            alert "Error"
+            return
+        gfx.drawText 20
+        $('#grid').change () ->
+            n = $(@).val()
+            gfx.drawText parseInt(n)
+            $('#size').html(n)
+    </script>
+</head>
+<body>
+    <canvas id="game" width="501" height="301"></canvas>
+    <br>
+    <input type="range" min="5" max="100" value="20" step="5" id="grid">
+    Text size: <span id="size">20</span>px
+</body>
+</html>
