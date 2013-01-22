@@ -2,19 +2,31 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Canvas ball</title>
+    <title>Canvas layers</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="coffee-script.js"></script>
     <script type="text/coffeescript">
     gfx =
         init: ->
-            canvas = $ "#game"
-            @ctx = canvas[0]?.getContext? "2d"
-            @ctx?
+            @ctxs = {}
+            for id in ['ball', 'background']
+                canvas = $ '#' + id
+                @ctxs[id] = canvas[0]?.getContext? "2d"
+                if not @ctxs[id]
+                    return false
+            true
+
+    drawBackground = ->
+        bg = new Image()
+        bg.src = 'background.png'
+        bg.onload = ->
+            @ctx = gfx.ctxs['background']
+            @ctx.drawImage(bg, 0, 0)
+
 
     class Ball
         constructor: (@x, @y, @radius, @color) ->
-            @ctx = gfx.ctx
+            @ctx = gfx.ctxs['ball']
             @offsetX = 1
             @offsetY = 1
         update: =>
@@ -31,8 +43,7 @@
             @clear()
             @draw()
         clear: ->
-            @ctx.fillStyle = "#fff"
-            @ctx.fillRect(0, 0, @ctx.canvas.width, @ctx.canvas.height)
+            @ctx.canvas.width = @ctx.canvas.width
         draw: ->
             @ctx.fillStyle = @color
             @ctx.beginPath()
@@ -45,13 +56,16 @@
             alert "Error"
             return
 
-        ball = new Ball 50, 50, 20, 'red'
+        drawBackground()
+
+        ball = new Ball 50, 50, 20, 'black'
         ball.draw()
 
-        setInterval ball.update, 10
+        setInterval ball.update, 5
     </script>
 </head>
 <body>
-    <canvas id="game" width="300" height="200" style="border:solid 1px black"></canvas>
+    <canvas id="background" width="600" height="300" style="position:absolute;z-index:1"></canvas>
+    <canvas id="ball" width="600" height="300" style="position:absolute;z-index:2"></canvas>
 </body>
 </html>

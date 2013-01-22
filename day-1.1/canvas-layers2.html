@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Canvas layers 2</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="coffee-script.js"></script>
+    <script type="text/coffeescript">
+    gfx =
+        init: ->
+            @ctxs = {}
+            for id in ['ball', 'background']
+                canvas = $ '#' + id
+                @ctxs[id] = canvas[0]?.getContext? "2d"
+                if not @ctxs[id]
+                    return false
+            true
+
+    drawBackground = ->
+        bg = new Image()
+        bg.src = 'background.png'
+        bg.onload = ->
+            @ctx = gfx.ctxs['background']
+            @ctx.drawImage(bg, 0, 0)
+
+
+    class Ball
+        constructor: (@x, @y, @radius, @color) ->
+            @ctx = gfx.ctxs['ball']
+            @offsetX = 1
+            @offsetY = 1
+        update: =>
+            if @x + @radius + 1 > @ctx.canvas.width - 44
+                @offsetX = -1
+            if @x - @radius - 1 < 44
+                @offsetX = 1
+            if @y + @radius + 1 > @ctx.canvas.height - 22
+                @offsetY = -1
+            if @y - @radius - 1 < 22
+                @offsetY = 1
+            @x += @offsetX
+            @y += @offsetY
+            @clear()
+            @draw()
+        clear: ->
+            @ctx.canvas.width = @ctx.canvas.width
+        draw: ->
+            @ctx.fillStyle = @color
+            @ctx.beginPath()
+            @ctx.arc(@x, @y, @radius, 0, Math.PI*2, true)
+            @ctx.closePath()
+            @ctx.fill()
+
+    $ ->
+        if not gfx.init()
+            alert "Error"
+            return
+
+        drawBackground()
+
+        ball = new Ball 50, 50, 15, 'black'
+        ball.draw()
+
+        setInterval ball.update, 5
+    </script>
+</head>
+<body>
+    <canvas id="background" width="600" height="300" style="position:absolute;z-index:1"></canvas>
+    <canvas id="ball" width="600" height="300" style="position:absolute;z-index:2"></canvas>
+</body>
+</html>
